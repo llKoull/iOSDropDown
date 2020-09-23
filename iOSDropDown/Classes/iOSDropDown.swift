@@ -145,15 +145,16 @@ open class iOSDropDown : UITextField{
         if isSearchEnable && handleKeyboard{
             NotificationCenter.default.addObserver(forName: UIResponder.keyboardWillShowNotification, object: nil, queue: nil) { (notification) in
                 if self.isFirstResponder{
-                let userInfo:NSDictionary = notification.userInfo! as NSDictionary
-                    let keyboardFrame:NSValue = userInfo[UIResponder.keyboardFrameEndUserInfoKey] as! NSValue
-                let keyboardRectangle = keyboardFrame.cgRectValue
-                self.keyboardHeight = keyboardRectangle.height
-                    if !self.isSelected{
-                        self.showList()
-                    }
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 5, execute: {
+                        let userInfo:NSDictionary = notification.userInfo! as NSDictionary
+                            let keyboardFrame:NSValue = userInfo[UIResponder.keyboardFrameEndUserInfoKey] as! NSValue
+                        let keyboardRectangle = keyboardFrame.cgRectValue
+                        self.keyboardHeight = keyboardRectangle.height
+                        if !self.isSelected{
+                            self.showList()
+                        }
+                    })
                 }
-              
             }
             NotificationCenter.default.addObserver(forName: UIResponder.keyboardWillHideNotification, object: nil, queue: nil) { (notification) in
                 if self.isFirstResponder{
