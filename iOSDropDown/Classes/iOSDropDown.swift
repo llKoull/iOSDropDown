@@ -145,16 +145,15 @@ open class iOSDropDown : UITextField{
         if isSearchEnable && handleKeyboard{
             NotificationCenter.default.addObserver(forName: UIResponder.keyboardWillShowNotification, object: nil, queue: nil) { (notification) in
                 if self.isFirstResponder{
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 5, execute: {
-                        let userInfo:NSDictionary = notification.userInfo! as NSDictionary
-                            let keyboardFrame:NSValue = userInfo[UIResponder.keyboardFrameEndUserInfoKey] as! NSValue
-                        let keyboardRectangle = keyboardFrame.cgRectValue
-                        self.keyboardHeight = keyboardRectangle.height
-                        if !self.isSelected{
-                            self.showList()
-                        }
-                    })
+                let userInfo:NSDictionary = notification.userInfo! as NSDictionary
+                    let keyboardFrame:NSValue = userInfo[UIResponder.keyboardFrameEndUserInfoKey] as! NSValue
+                let keyboardRectangle = keyboardFrame.cgRectValue
+                self.keyboardHeight = keyboardRectangle.height
+                    if !self.isSelected{
+                        self.showList()
+                    }
                 }
+              
             }
             NotificationCenter.default.addObserver(forName: UIResponder.keyboardWillHideNotification, object: nil, queue: nil) { (notification) in
                 if self.isFirstResponder{
@@ -196,62 +195,65 @@ open class iOSDropDown : UITextField{
         return superView!.convert(pnt, to: baseView)
     }
     public func showList() {
-        if parentController == nil{
-            parentController = self.parentViewController
-        }
-        backgroundView.frame = parentController?.view.frame ?? backgroundView.frame
-        pointToParent = getConvertedPoint(self, baseView: parentController?.view)
-        parentController?.view.insertSubview(backgroundView, aboveSubview: self)
-        TableWillAppearCompletion()
-        if listHeight > rowHeight * CGFloat( dataArray.count) {
-            self.tableheightX = rowHeight * CGFloat(dataArray.count)
-        }else{
-            self.tableheightX = listHeight
-        }
-        table = UITableView(frame: CGRect(x: pointToParent.x ,
-                                          y: pointToParent.y + self.frame.height ,
-                                          width: self.frame.width,
-                                          height: self.frame.height))
-        shadow = UIView(frame: table.frame)
-        shadow.backgroundColor = .clear
+        DispatchQueue.main.asyncAfter(deadline: .now() + 5, execute: {
+            if self.parentController == nil{
+                self.parentController = self.parentViewController
+            }
+            self.backgroundView.frame = self.parentController?.view.frame ?? self.backgroundView.frame
+            self.pointToParent = self.getConvertedPoint(self, baseView: self.parentController?.view)
+            self.parentController?.view.insertSubview(self.backgroundView, aboveSubview: self)
+            self.TableWillAppearCompletion()
+            if self.listHeight > self.rowHeight * CGFloat( self.dataArray.count) {
+                self.tableheightX = self.rowHeight * CGFloat(self.dataArray.count)
+            }else{
+                self.tableheightX = self.listHeight
+            }
+            self.table = UITableView(frame: CGRect(x: self.pointToParent.x ,
+                                                   y: self.pointToParent.y + self.frame.height ,
+                                              width: self.frame.width,
+                                              height: self.frame.height))
+            self.shadow = UIView(frame: self.table.frame)
+            self.shadow.backgroundColor = .clear
 
-        table.dataSource = self
-        table.delegate = self
-        table.alpha = 0
-        table.separatorStyle = .none
-        table.layer.cornerRadius = 3
-        table.backgroundColor = rowBackgroundColor
-        table.rowHeight = rowHeight
-        parentController?.view.addSubview(shadow)
-        parentController?.view.addSubview(table)
-        self.isSelected = true
-        let height = (self.parentController?.view.frame.height ?? 0) - (self.pointToParent.y + self.frame.height + 5)
-        var y = self.pointToParent.y+self.frame.height+5
-        if height < (keyboardHeight+tableheightX){
-            y = self.pointToParent.y - tableheightX
-        }
-        UIView.animate(withDuration: 0.3,
-                       delay: 0,
-                       usingSpringWithDamping: 0.4,
-                       initialSpringVelocity: 0.1,
-                       options: .curveEaseInOut,
-                       animations: { () -> Void in
+            self.table.dataSource = self
+            self.table.delegate = self
+            self.table.alpha = 0
+            self.table.separatorStyle = .none
+            self.table.layer.cornerRadius = 3
+            self.table.backgroundColor = self.rowBackgroundColor
+            self.table.rowHeight = self.rowHeight
+            self.parentController?.view.addSubview(self.shadow)
+            self.parentController?.view.addSubview(self.table)
+            self.isSelected = true
+            let height = (self.parentController?.view.frame.height ?? 0) - (self.pointToParent.y + self.frame.height + 5)
+            var y = self.pointToParent.y+self.frame.height+5
+            if height < (self.keyboardHeight+self.tableheightX){
+                y = self.pointToParent.y - self.tableheightX
+            }
+            UIView.animate(withDuration: 0.3,
+                           delay: 0,
+                           usingSpringWithDamping: 0.4,
+                           initialSpringVelocity: 0.1,
+                           options: .curveEaseInOut,
+                           animations: { () -> Void in
 
-                        self.table.frame = CGRect(x: self.pointToParent.x,
-                                                  y: y,
-                                                  width: self.frame.width,
-                                                  height: self.tableheightX)
-                        self.table.alpha = 1
-                        self.shadow.frame = self.table.frame
-                        self.shadow.dropShadow()
-                        self.arrow.position = .up
-                       
+                            self.table.frame = CGRect(x: self.pointToParent.x,
+                                                      y: y,
+                                                      width: self.frame.width,
+                                                      height: self.tableheightX)
+                            self.table.alpha = 1
+                            self.shadow.frame = self.table.frame
+                            self.shadow.dropShadow()
+                            self.arrow.position = .up
+                           
 
-        },
-                       completion: { (finish) -> Void in
-                        self.layoutIfNeeded()
+            },
+                           completion: { (finish) -> Void in
+                            self.layoutIfNeeded()
 
+            })
         })
+        
 
     }
 

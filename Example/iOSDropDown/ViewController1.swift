@@ -10,11 +10,11 @@ import UIKit
 import iOSDropDown
 
 class ViewController1: UIViewController {
-    @IBOutlet var customData: [DropDown]!
+    @IBOutlet var customData: [iOSDropDown]!
     @IBOutlet var customView: UIView!
     @IBOutlet weak var segment: UISegmentedControl!
     @IBOutlet weak var valueLabel: UILabel!
-    @IBOutlet weak var mainDropDown: DropDown!
+    @IBOutlet weak var mainDropDown: iOSDropDown!
     
     override func viewDidLoad() {
         super.viewDidLoad()
