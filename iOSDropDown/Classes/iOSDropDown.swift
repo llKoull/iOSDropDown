@@ -197,7 +197,7 @@ open class iOSDropDown : UITextField{
     public func showList() {
         self.isSelected = true
         
-        DispatchQueue.main.asyncAfter(deadline: .now() + 5, execute: {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3, execute: {
             if self.parentController == nil{
                 self.parentController = self.parentViewController
             }
