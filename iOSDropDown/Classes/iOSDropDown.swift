@@ -195,41 +195,42 @@ open class iOSDropDown : UITextField{
         return superView!.convert(pnt, to: baseView)
     }
     public func showList() {
-        DispatchQueue.main.asyncAfter(deadline: .now() + 5, execute: {
-            if self.parentController == nil{
-                self.parentController = self.parentViewController
-            }
-            self.backgroundView.frame = self.parentController?.view.frame ?? self.backgroundView.frame
-            self.pointToParent = self.getConvertedPoint(self, baseView: self.parentController?.view)
-            self.parentController?.view.insertSubview(self.backgroundView, aboveSubview: self)
-            self.TableWillAppearCompletion()
-            if self.listHeight > self.rowHeight * CGFloat( self.dataArray.count) {
-                self.tableheightX = self.rowHeight * CGFloat(self.dataArray.count)
-            }else{
-                self.tableheightX = self.listHeight
-            }
-            self.table = UITableView(frame: CGRect(x: self.pointToParent.x ,
-                                                   y: self.pointToParent.y + self.frame.height ,
-                                              width: self.frame.width,
-                                              height: self.frame.height))
-            self.shadow = UIView(frame: self.table.frame)
-            self.shadow.backgroundColor = .clear
+        if self.parentController == nil{
+            self.parentController = self.parentViewController
+        }
+        self.backgroundView.frame = self.parentController?.view.frame ?? self.backgroundView.frame
+        self.pointToParent = self.getConvertedPoint(self, baseView: self.parentController?.view)
+        self.parentController?.view.insertSubview(self.backgroundView, aboveSubview: self)
+        self.TableWillAppearCompletion()
+        if self.listHeight > self.rowHeight * CGFloat( self.dataArray.count) {
+            self.tableheightX = self.rowHeight * CGFloat(self.dataArray.count)
+        }else{
+            self.tableheightX = self.listHeight
+        }
+        self.table = UITableView(frame: CGRect(x: self.pointToParent.x ,
+                                               y: self.pointToParent.y + self.frame.height ,
+                                          width: self.frame.width,
+                                          height: self.frame.height))
+        self.shadow = UIView(frame: self.table.frame)
+        self.shadow.backgroundColor = .clear
 
-            self.table.dataSource = self
-            self.table.delegate = self
-            self.table.alpha = 0
-            self.table.separatorStyle = .none
-            self.table.layer.cornerRadius = 3
-            self.table.backgroundColor = self.rowBackgroundColor
-            self.table.rowHeight = self.rowHeight
-            self.parentController?.view.addSubview(self.shadow)
-            self.parentController?.view.addSubview(self.table)
-            self.isSelected = true
-            let height = (self.parentController?.view.frame.height ?? 0) - (self.pointToParent.y + self.frame.height + 5)
-            var y = self.pointToParent.y+self.frame.height+5
-            if height < (self.keyboardHeight+self.tableheightX){
-                y = self.pointToParent.y - self.tableheightX
-            }
+        self.table.dataSource = self
+        self.table.delegate = self
+        self.table.alpha = 0
+        self.table.separatorStyle = .none
+        self.table.layer.cornerRadius = 3
+        self.table.backgroundColor = self.rowBackgroundColor
+        self.table.rowHeight = self.rowHeight
+        self.parentController?.view.addSubview(self.shadow)
+        self.parentController?.view.addSubview(self.table)
+        self.isSelected = true
+        let height = (self.parentController?.view.frame.height ?? 0) - (self.pointToParent.y + self.frame.height + 5)
+        var y = self.pointToParent.y+self.frame.height+5
+        if height < (self.keyboardHeight+self.tableheightX){
+            y = self.pointToParent.y - self.tableheightX
+        }
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 5, execute: {
             UIView.animate(withDuration: 0.3,
                            delay: 0,
                            usingSpringWithDamping: 0.4,
